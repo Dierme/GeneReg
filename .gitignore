@@ -70,3 +70,5 @@ node_modules/
 # bower packages
 tarfind/assets-src/vendor/
 .sass-cache/
+!/tarfind/assets/
+!/request/lib/

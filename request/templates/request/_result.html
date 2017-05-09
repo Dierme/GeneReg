@@ -1,0 +1,130 @@
+{% load staticfiles %}
+{% block pre_content_js %}
+    <!--Highcharts [ REQUIRED ]-->
+    <script src="{% static 'js/highcharts.js' %} "></script>
+    <script src="{% static 'js/exporting.js' %}"></script>
+{% endblock %}
+
+{% for gene, warning_text in warnings.items %}
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert"><span>×</span></button>
+        <strong>Oh snap!</strong> {{ warning_text }}
+    </div>
+{% endfor %}
+<div id="charts" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+<div class="panel">
+    <div class="panel-heading">
+        <h3 class="panel-title">Results of search</h3>
+    </div>
+    <div class="panel-body">
+        The results of search are represented in the table.
+
+        <div class="list-group">
+            {% for mirna, genes_data in final_mirna_dict.items %}
+                {% if genes_data.genes_name|length >= min_genes and genes_data.sites >= min_sites %}
+                    <div class="row list-group-item list-item-sm"
+                           data-toggle="collapse"
+                           data-target="#gene_{{forloop.counter}}">
+                        <div class="col-md-12">
+                            <div class="col-md-4">
+                                {{mirna}}
+                            </div>
+                            <div class="col-md-4">
+                                Genes: {{genes_data.genes_name|length}}
+                            </div>
+                            <div class="col-md-4">
+                                Sites: {{genes_data.sites}}
+                            </div>
+                        </div>
+                    </div>
+                    <div id="gene_{{forloop.counter}}" class="collapse">
+                        <ul>
+                            {% for gene in genes_data.genes_name %}
+                            <li>{{ gene }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    var categ = [];
+    {% for mirna, genes_data in final_mirna_dict.items %}
+        {% if genes_data.genes_name|length >= min_genes and genes_data.sites >= min_sites %}
+            var mirna = '{{mirna}}';
+            categ.push(mirna);
+        {%endif%}
+    {%endfor%}
+    console.log(categ);
+
+    n_genes = []
+    {% for mirna, genes_data in final_mirna_dict.items %}
+        {% if genes_data.genes_name|length >= min_genes and genes_data.sites >= min_sites %}
+            var n_gene = {{genes_data.genes_name|length}}
+            n_genes.push(n_gene)
+        {%endif%}
+    {%endfor%}
+    console.log(n_genes);
+
+    n_sites = []
+    {% for mirna, genes_data in final_mirna_dict.items %}
+        {% if genes_data.genes_name|length >= min_genes and genes_data.sites >= min_sites %}
+            var n_site = {{genes_data.sites}}
+            n_sites.push(n_site)
+        {%endif%}
+    {%endfor%}
+    console.log(n_sites);
+</script>
+<script type="text/javascript">
+
+    Highcharts.chart('charts', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Result of genes group miRNA regulation search'
+        },
+        subtitle: {
+            text: 'Sources: TargetScan'
+        },
+        xAxis: {
+            categories: categ,
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: ''
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Number of genes',
+            data: n_genes
+        },
+        {
+            name: 'Number of sites',
+            data: n_sites
+        }
+        ]
+    });
+
+</script>

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block page-title %}Welcome to the GeneReg!{%endblock%}
+{%block active_home %}<li class="active-link">{%endblock%}
+{% block content %}
+    <div class="pad-btm" style="font-size: 16px">
+        <h4>About</h4>
+        This project aims to provide utility of working with popular services for finding gene regulating miRNAs
+        such as <a href="http://www.targetscan.org">TargetScan</a>,
+        <a href="http://www.miranda-im.org/">miRanda</a>
+        <a href="http://zmf.umm.uni-heidelberg.de/apps/zmf/mirwalk2/">mirWalk</a>
+        and ability to complex analyze its data
+    </div>
+    <div class="pad-btm" style="font-size: 16px">
+        <h4>Example</h4>
+        Maybe you want to find all miRNA which can inhibit *gene1*, *gene2*...*geneN* or you have a concrete pathway.
+        Sure! This application can provide you with an answer using popular services for finding miRNA targets.
+        Results will be provided in tables and graphics with numbers or miRNA and targeted sites for each gene.
+    </div>
+    <div style="font-size: 16px">
+        *graphics*
+        <br>
+        *tables*
+    </div>
+{% endblock %}

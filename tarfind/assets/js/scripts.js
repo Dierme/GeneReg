@@ -52,7 +52,6 @@ $(document).ready(function() {
             }
         });
     };
-
     $('.request-content').on('click', ".list-item-sm", function(){
         if(!$(this).hasClass('active')){
             $(this).addClass('active')

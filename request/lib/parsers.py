@@ -111,20 +111,32 @@ class TargetScanParser(AParser):
         if specification is not None:
             return {'success': False, 'specification': specification}
 
+        # parsing txt response file
         file = response.text
         lines = file.splitlines()
-
         mirna_dict = dict()
 
+        mirna_params = lines[0].split('\t')
+        lines = lines[1:]
+
         for i, line in enumerate(lines):
-            if i == 0 or i == 1:
+            line_list = list()
+            line_split_space = line.split(' ')
+            for line_part in line_split_space:
+                line_list += line_part.split('\t')
+
+            # work with not conserved sites is not implemented yet
+            if line_list[0] == 'Poorly':
+                break
+
+            # working with conserved sites
+            if line_list[0] == 'Conserved':
                 continue
-            line_attrs = line.split('\t')
-            mirna = line_attrs[0]
-            if mirna in mirna_dict:
-                mirna_dict[mirna] += 1
+            mirna_name = line_list[0]
+            if mirna_name in mirna_dict:
+                mirna_dict[mirna_name] += 1
             else:
-                mirna_dict[mirna] = 1
+                mirna_dict[mirna_name] = 1
 
         return {'success': True, 'specification': None, 'mirna_list': mirna_dict}
 

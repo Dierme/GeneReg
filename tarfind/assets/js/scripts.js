@@ -32,7 +32,13 @@ $(document).ready(function() {
             // handle a successful response
             success : function(json) {
                 if(json.success){
-                    $('.request-content').html(json.html)
+                    $('#tabs-box-2').html(json.html)
+                    $('#tabs-box-1').removeClass("in")
+                    $('#tabs-box-1').removeClass("active")
+                    $('#tabs-box-2').addClass("active")
+                    $('#tabs-box-2').addClass("in")
+                    $( "#nav-tab1" ).removeClass( "active" );
+                    $( "#nav-tab2" ).addClass( "active" );
                     console.log("success"); // another sanity check
                 }
                 else{
@@ -47,17 +53,70 @@ $(document).ready(function() {
             // handle a non-successful response
             error : function(xhr,errmsg,err) {
                 $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
-                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                    " <a href='#' class='close'>&times;<    /a></div>"); // add the error to the dom
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
         });
     };
+
+    // collapse gene on click
     $('.request-content').on('click', ".list-item-sm", function(){
-        if(!$(this).hasClass('active')){
-            $(this).addClass('active')
+        var elem = $(this);
+        collapse_list_element(elem);
+    });
+
+    // collapse all genes on click
+    $('.request-content').on('click', "#collapse-all-genes", function(){
+        var status = $(this).val();
+        console.log(status);
+        if(status == '0'){
+            $(".list-item-sm").each(function(){
+                var elem = $(this);
+                collapse_list_element(elem, true);
+            })
+            $(this).val('1')
         }
-        else{
-            $(this).removeClass('active')
+        if(status == '1'){
+            $(".list-item-sm").each(function(){
+                var elem = $(this);
+                collapse_list_element(elem, false);
+            });
+            $(this).val('0')
         }
     });
 });
+
+
+function collapse_list_element(element, direction = null){
+        //  direction == null
+        //      custom user click collapse
+        //  direction == true
+        //      opening list element
+        //  direction == false
+        //      closing list element
+        console.log(direction)
+        if(direction === null){
+            if(!element.hasClass('active')){
+                element.addClass('active')
+                collapse_id = element.attr('data-target');
+                $(collapse_id).collapse('show')
+            }
+            else{
+                element.removeClass('active')
+                collapse_id = element.attr('data-target');
+                $(collapse_id).collapse('hide');
+            }
+        }
+        else if(direction === true) {
+            if(!element.hasClass('active')){
+                element.addClass('active')
+                collapse_id = element.attr('data-target');
+                $(collapse_id).collapse('show')
+            }
+        }
+        else if (direction === false) {
+            element.removeClass('active')
+            collapse_id = element.attr('data-target');
+            $(collapse_id).collapse('hide');
+        }
+    }

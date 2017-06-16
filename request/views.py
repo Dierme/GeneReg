@@ -36,10 +36,14 @@ def index(request):
         for gene, mirna_dict in response['gene_mirna_dict'].items():
             for mirna, n_sites in mirna_dict.items():
                 if mirna in final_mirna_dict:
-                    final_mirna_dict[mirna]['genes_name'].append(gene)
+                    if gene not in final_mirna_dict[mirna]['genes']:
+                        gene_has_sites = {gene: n_sites}
+                        final_mirna_dict[mirna]['genes'].append(gene_has_sites)
                     final_mirna_dict[mirna]['sites'] += n_sites
                 else:
-                    final_mirna_dict[mirna] = {'sites': n_sites, 'genes_name': [gene]}
+                    gene_has_sites = {gene: n_sites}
+                    final_mirna_dict[mirna] = {'sites': n_sites, 'genes': [gene_has_sites]}
+
 
         html = render_to_string('request/_result.html', {
             'success': True,

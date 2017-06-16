@@ -18,30 +18,40 @@
         <h3 class="panel-title">Results of search</h3>
     </div>
     <div class="panel-body">
-        The results of search are represented in the table.
-
+        <div class="row">
+            <div class="col-sm-6">
+                The results of search are represented in the table.
+            </div>
+            <div class="col-sm-6">
+                <label class="form-checkbox form-normal form-primary form-text">
+                    <input type="checkbox" id="collapse-all-genes" value="0">
+                    <h5>Collapse all</h5>
+                </label>
+            </div>
+        </div>
         <div class="list-group">
             {% for mirna, genes_data in final_mirna_dict.items %}
-                {% if genes_data.genes_name|length >= min_genes and genes_data.sites >= min_sites %}
+                {% if genes_data.genes|length >= min_genes and genes_data.sites >= min_sites %}
                     <div class="row list-group-item list-item-sm"
-                           data-toggle="collapse"
                            data-target="#gene_{{forloop.counter}}">
                         <div class="col-md-12">
                             <div class="col-md-4">
                                 {{mirna}}
                             </div>
                             <div class="col-md-4">
-                                Genes: {{genes_data.genes_name|length}}
+                                Genes: {{genes_data.genes|length}}
                             </div>
                             <div class="col-md-4">
-                                Sites: {{genes_data.sites}}
+                                Total sites: {{genes_data.sites}}
                             </div>
                         </div>
                     </div>
                     <div id="gene_{{forloop.counter}}" class="collapse">
                         <ul>
-                            {% for gene in genes_data.genes_name %}
-                            <li>{{ gene }}</li>
+                            {% for genes in genes_data.genes %}
+                                {% for gene, n_sites in genes.items %}
+                                <li>{{ gene }} : {{n_sites}} site(s)</li>
+                                {% endfor %}
                             {% endfor %}
                         </ul>
                     </div>
@@ -55,7 +65,7 @@
 <script type="text/javascript">
     var categ = [];
     {% for mirna, genes_data in final_mirna_dict.items %}
-        {% if genes_data.genes_name|length >= min_genes and genes_data.sites >= min_sites %}
+        {% if genes_data.genes|length >= min_genes and genes_data.sites >= min_sites %}
             var mirna = '{{mirna}}';
             categ.push(mirna);
         {%endif%}
@@ -64,8 +74,8 @@
 
     n_genes = []
     {% for mirna, genes_data in final_mirna_dict.items %}
-        {% if genes_data.genes_name|length >= min_genes and genes_data.sites >= min_sites %}
-            var n_gene = {{genes_data.genes_name|length}}
+        {% if genes_data.genes|length >= min_genes and genes_data.sites >= min_sites %}
+            var n_gene = {{genes_data.genes|length}}
             n_genes.push(n_gene)
         {%endif%}
     {%endfor%}
@@ -73,7 +83,7 @@
 
     n_sites = []
     {% for mirna, genes_data in final_mirna_dict.items %}
-        {% if genes_data.genes_name|length >= min_genes and genes_data.sites >= min_sites %}
+        {% if genes_data.genes|length >= min_genes and genes_data.sites >= min_sites %}
             var n_site = {{genes_data.sites}}
             n_sites.push(n_site)
         {%endif%}

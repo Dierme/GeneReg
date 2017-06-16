@@ -12,96 +12,119 @@
 {%endblock %}
 
 {% block content %}
-<div class="request-content">
-    <div class="panel">
-        <form action="/request/" method="post" id="create-request">
-            {% csrf_token %}
-            <div class="panel-heading">
-                <h3 class="panel-title">Search for gene regulating miRNA</h3>
+<div class="panel panel-info request-content">
+    <!--Panel heading-->
+    <div class="panel-heading">
+        <div class="panel-control">
+
+            <!--Nav tabs-->
+            <ul class="nav nav-tabs">
+                <li id="nav-tab1" class="active"><a data-toggle="tab" href="#tabs-box-1" aria-expanded="true">Input</a>
+                </li>
+                <li id="nav-tab2" class=""><a data-toggle="tab" href="#tabs-box-2" aria-expanded="false">Result</a>
+                </li>
+            </ul>
+
+        </div>
+        <h3 class="panel-title">Request</h3>
+    </div>
+
+    <!--Panel body-->
+    <div class="panel-body">
+        <!--Tabs content-->
+        <div class="tab-content">
+            <div id="tabs-box-1" class="tab-pane fade active in">
+                <form action="/request/" method="post" id="create-request">
+                    {% csrf_token %}
+                    <h4 class="pad-no">Search for gene regulating miRNA</h4>
+                    <div class="row pad-all">
+                        <div class="col-md-12 pad-btm">
+                            <div class="row">
+                                <div class="col-md-5">
+                                   <h4 class="mar-no pad-btm">Genes</h4>
+                                   <textarea name="genes" style="width:100%" rows="5"></textarea>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="pad-all">
+                                        <h4 style="line-height: 150%;">
+                                            Enter a human gene symbol, Ensembl gene or transcript separating each new one with coma.
+                                            <br>
+                                            <i>Example:</i> lin28a, ENSG00000149948, ENST00000403681
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 pad-btm">
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class="form-group">
+                                        <h4 class="mar-no pad-btm">Min genes</h4>
+                                        <input name="min_genes" >
+                                    </div>
+                                    <div class="form-group">
+                                        <h4 class="mar-no pad-btm">Min sites</h4>
+                                        <input name="min_sites" >
+                                    </div>
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="pad-all">
+                                        <h4 style="line-height: 150%;">
+                                            Enter minimum number of genes/sites miRNA should regulate/pair to be shown in the results table
+                                            <br>
+                                            <i>Example:</i> You make request for 5 genes and put 3 into "Min genes" and 5 into "Min sites".
+                                            That means, that only miRNA, which regulate min 3 genes out of 5 and have 5 sites to pair
+                                            will be shown in the results.
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-5 pad-ver">
+                                    <h4 class="mar-no pad-btm">Sources</h4>
+                                    {% for service in services %}
+                                        {% if service.name == 'TargetScan' %}
+                                            <label class="form-checkbox form-normal form-primary active form-text">
+                                                <input type="checkbox" checked="" name="service" value="{{ service.id }}">
+                                                <h4>{{ service.name }}</h4>
+                                            </label>
+                                        {% else %}
+                                            <label class="form-checkbox form-normal disabled form-primary form-text">
+                                                <input disabled type="checkbox" name="service" value="{{ service.id }}">
+                                                <h4>{{ service.name }}</h4>
+                                            </label>
+                                        {% endif %}
+                                   {% endfor %}
+                                </div>
+                                <div class="col-md-7">
+                                    <div class="pad-all">
+                                        <h4 style="line-height: 150%;">
+                                            Select services for processing genes.
+                                        </h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row" id="errors">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <button class="btn btn-info pull-right" type="submit" id="submit-create-request">Submit</button>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-md-12 pad-btm">
-                        <div class="row">
-                            <div class="col-md-5">
-                               <h4 class="mar-no pad-btm">Genes</h4>
-                               <textarea name="genes" style="width:100%" rows="5"></textarea>
-                            </div>
-                            <div class="col-md-7">
-                                <div class="pad-all">
-                                    <h4 style="line-height: 150%;">
-                                        Enter a human gene symbol, Ensembl gene or transcript separating each new one with coma.
-                                        <br>
-                                        <i>Example:</i> lin28a, ENSG00000149948, ENST00000403681
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12 pad-btm">
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-5">
-                                <div class="form-group">
-                                    <h4 class="mar-no pad-btm">Min genes</h4>
-                                    <input name="min_genes" >
-                                </div>
-                                <div class="form-group">
-                                    <h4 class="mar-no pad-btm">Min sites</h4>
-                                    <input name="min_sites" >
-                                </div>
-                            </div>
-                            <div class="col-md-7">
-                                <div class="pad-all">
-                                    <h4 style="line-height: 150%;">
-                                        Enter minimum number of genes/sites miRNA should regulate/pair to be shown in the results table
-                                        <br>
-                                        <i>Example:</i> You make request for 5 genes and put 3 into "Min genes" and 5 into "Min sites".
-                                        That means, that only miRNA, which regulate min 3 genes out of 5 and have 5 sites to pair
-                                        will be shown in the results.
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <hr>
-                        <div class="row">
-                            <div class="col-md-5 pad-ver">
-                                <h4 class="mar-no pad-btm">Sources</h4>
-                                {% for service in services %}
-                                    {% if service.name == 'TargetScan' %}
-                                        <label class="form-checkbox form-normal form-primary active form-text">
-                                            <input type="checkbox" checked="" name="service" value="{{ service.id }}">
-                                            <h4>{{ service.name }}</h4>
-                                        </label>
-                                    {% else %}
-                                        <label class="form-checkbox form-normal disabled form-primary form-text">
-                                            <input disabled type="checkbox" name="service" value="{{ service.id }}">
-                                            <h4>{{ service.name }}</h4>
-                                        </label>
-                                    {% endif %}
-                               {% endfor %}
-                            </div>
-                            <div class="col-md-7">
-                                <div class="pad-all">
-                                    <h4 style="line-height: 150%;">
-                                        Select services for processing genes.
-                                    </h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="row" id="errors">
-                        </div>
-                    </div>
-                </div>
+            <div id="tabs-box-2" class="tab-pane fade">
+                hello
             </div>
-            <div class="panel-footer text-right">
-                <button class="btn btn-info" type="submit" id="submit-create-request">Submit</button>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 

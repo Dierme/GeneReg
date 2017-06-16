@@ -7,4 +7,5 @@ urlpatterns = [
     url(r'^index/', views.index),
     url(r'^admin/', admin.site.urls),
     url(r'^request/', include('request.urls')),
+    url(r'^pylab/', include('pylab.urls')),
 ]

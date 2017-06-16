@@ -8,7 +8,7 @@ root = lambda *x: os.path.join(BASE_DIR, *x)
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'CHANGE THIS!!!'
+SECRET_KEY = 'secure_key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -25,7 +25,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'request.apps.RequestConfig'
+    'request.apps.RequestConfig',
+    'pylab.apps.PylabConfig',
 ]
 
 PROJECT_APPS = []

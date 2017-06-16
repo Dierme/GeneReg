@@ -1,8 +1,16 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block end_file_script %}
+	<script src="{% static 'js/pylab.js' %}"></script>
+{% endblock %}
+
+
 
 {% block page-title %}Pylab test task{%endblock%}
 
 {%block active_pylab %}<li class="active-link">{%endblock%}
+
 
 {%block breadcrumb %}
     <ol class="breadcrumb">
@@ -12,5 +20,54 @@
 {%endblock %}
 
 {% block content %}
-pylab test
+<div class="panel panel-info">
+    <!--Panel heading-->
+    <div class="panel-heading">
+        <h3 class="panel-title">Request</h3>
+    </div>
+
+    <!--Panel body-->
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="col-md-12">
+                    <form method="POST" id="name-form">
+                        {% csrf_token %}
+                        <div class="fieldWrapper" id="the_post">
+                            {{ form.name }}
+                        </div>
+                        <div class="col-md-12 pad-top">
+                            <input type="submit" value="Post" class="btn btn-info">
+                        </div>
+                        <div class="col-md-12" id="results"></div>
+                    </form>
+                </div>
+                <!--<div class="col-md-12 pad-top">-->
+                    <!--<button class="btn btn-info" type="submit" id="submit-name">Submit</button>-->
+                <!--</div>-->
+            </div>
+            <div class="col-sm-6 names-table">
+                <h4>Saved names</h4>
+                {% for obj in names %}
+                <div class="col-sm-12 pad-btm">
+                    <div class="col-sm-6">
+                        {{forloop.counter}}. {{obj.name}}
+                    </div>
+                    <div class="col-sm-6">
+                        <button value="{{obj.id}}" class="delete-name btn btn-sm btn-warning">delete</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12" id="name_rand">
+
+            </div>
+            <div class="col-md-12   ">
+                <button class="btn btn-info" id="get_random_names">Random</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

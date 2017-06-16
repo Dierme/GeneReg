@@ -1,0 +1,11 @@
+<h4>Saved names</h4>
+{% for obj in names %}
+<div class="col-sm-12 pad-btm">
+    <div class="col-sm-6">
+        {{forloop.counter}}. {{obj.name}}
+    </div>
+    <div class="col-sm-6">
+        <button value="{{obj.id}}" class="delete-name btn btn-sm btn-warning">delete</button>
+    </div>
+</div>
+{% endfor %}
